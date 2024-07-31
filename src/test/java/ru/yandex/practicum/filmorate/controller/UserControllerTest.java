@@ -102,7 +102,7 @@ class UserControllerTest {
         user.setEmail("sexyshmeksi@jora.thx");
         user.setLogin("Login");
         user.setName("Name");
-        user.setBirthday(LocalDate.of(2000, 6, 11));
+        user.setBirthday(LocalDate.of(2222, 2, 26));
         User userInfoToUpdate = User.addUser(user);
         String userRequestString = gson.toJson(userInfoToUpdate);
 
