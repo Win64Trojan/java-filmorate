@@ -47,7 +47,7 @@ class UserControllerTest {
         user.setLogin("Login");
         user.setName("Name");
         user.setBirthday(LocalDate.of(2000, 6, 11));
-        User newUser = User.addUser(user);
+        User newUser = UserController.add(user);
         String userString = gson.toJson(newUser);
 
         mockMvc.perform(post("/users")
@@ -63,7 +63,7 @@ class UserControllerTest {
         user.setLogin("Login");
         user.setName("Name");
         user.setBirthday(LocalDate.of(2229, 2, 26));
-        User newUser = User.addUser(user);
+        User newUser = UserController.add(user);
         String userString = gson.toJson(newUser);
 
         mockMvc.perform(post("/users")
@@ -87,7 +87,7 @@ class UserControllerTest {
         user.setLogin("Login");
         user.setName("Name");
         user.setBirthday(LocalDate.of(2000, 6, 11));
-        User userInfoToUpdate = User.addUser(user);
+        User userInfoToUpdate = UserController.add(user);
         String userRequestString = gson.toJson(userInfoToUpdate);
 
         mockMvc.perform(put("/users")
@@ -103,7 +103,7 @@ class UserControllerTest {
         user.setLogin("Login");
         user.setName("Name");
         user.setBirthday(LocalDate.of(2222, 2, 26));
-        User userInfoToUpdate = User.addUser(user);
+        User userInfoToUpdate = UserController.add(user);
         String userRequestString = gson.toJson(userInfoToUpdate);
 
         mockMvc.perform(put("/users")
@@ -119,7 +119,7 @@ class UserControllerTest {
         user.setLogin("Login");
         user.setName("Name");
         user.setBirthday(LocalDate.of(2000, 6, 11));
-        User userInfoToUpdate = User.addUser(user);
+        User userInfoToUpdate = UserController.add(user);
         userInfoToUpdate.setId(404L);
         String userRequestString = gson.toJson(userInfoToUpdate);
 

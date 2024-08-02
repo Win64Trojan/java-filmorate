@@ -49,7 +49,7 @@ class FilmControllerTest {
         film.setDescription("Description");
         film.setReleaseDate(LocalDate.of(2000, 6, 11));
         film.setDuration(Duration.ofSeconds(10));
-        Film newFilm = Film.addFilm(film);
+        Film newFilm = FilmController.add(film);
         String filmString = gson.toJson(newFilm);
 
         mockMvc.perform(post("/films")
@@ -65,7 +65,7 @@ class FilmControllerTest {
         film.setDescription("Description");
         film.setReleaseDate(LocalDate.of(2000, 6, 11));
         film.setDuration(Duration.ofSeconds(10));
-        Film newFilm = Film.addFilm(film);
+        Film newFilm = FilmController.add(film);
         String filmString = gson.toJson(newFilm);
 
         mockMvc.perform(post("/films")
@@ -89,7 +89,7 @@ class FilmControllerTest {
         film.setDescription("Description");
         film.setReleaseDate(LocalDate.of(2000, 6, 11));
         film.setDuration(Duration.ofSeconds(10));
-        Film filmInfoToUpdate = Film.addFilm(film);
+        Film filmInfoToUpdate = FilmController.add(film);
         String filmRequestString = gson.toJson(filmInfoToUpdate);
 
         mockMvc.perform(put("/films")
@@ -105,7 +105,7 @@ class FilmControllerTest {
         film.setDescription("Description");
         film.setReleaseDate(LocalDate.of(2000, 6, 11));
         film.setDuration(Duration.ofSeconds(10));
-        Film filmInfoToUpdate = Film.addFilm(film);
+        Film filmInfoToUpdate = FilmController.add(film);
         String filmRequestString = gson.toJson(filmInfoToUpdate);
 
         mockMvc.perform(put("/films")
@@ -121,7 +121,7 @@ class FilmControllerTest {
         film.setDescription("Description");
         film.setReleaseDate(LocalDate.of(2000, 6, 11));
         film.setDuration(Duration.ofSeconds(10));
-        Film filmInfoToUpdate = Film.addFilm(film);
+        Film filmInfoToUpdate = FilmController.add(film);
         filmInfoToUpdate.setId(404L);
         String filmRequestString = gson.toJson(filmInfoToUpdate);
 
@@ -130,7 +130,6 @@ class FilmControllerTest {
                         .content(filmRequestString))
                 .andExpect(status().isNotFound());
     }
-
 
 
     static class LocalDateTypeAdapter extends TypeAdapter<LocalDate> {

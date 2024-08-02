@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.model;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.yandex.practicum.filmorate.controller.FilmController;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -11,7 +12,7 @@ class FilmTest {
 
     @BeforeEach
     void setUp() {
-        Film.films.clear();
+        FilmController.films.clear();
     }
 
     @Test
@@ -23,10 +24,10 @@ class FilmTest {
             film.setDescription("Description");
             film.setReleaseDate(LocalDate.of(2000, 6, 11));
             film.setDuration(Duration.ofSeconds(10));
-            Film.addFilm(film);
+            FilmController.add(film);
         }
 
-        Assertions.assertEquals(creatingTimes, Film.getFilmsList().size());
+        Assertions.assertEquals(creatingTimes, FilmController.getFilms().size());
     }
 
     @Test
@@ -39,7 +40,7 @@ class FilmTest {
             film.setDescription("Description");
             film.setReleaseDate(LocalDate.of(2000, 6, 11));
             film.setDuration(Duration.ofSeconds(10));
-            lastAddedFilm = Film.addFilm(film);
+            lastAddedFilm = FilmController.add(film);
         }
 
         Assertions.assertEquals(creatingTimes, lastAddedFilm.getId());
