@@ -66,7 +66,7 @@ class UserControllerTest {
         user.setEmail("sexyshmeksi@jora.thx");
         user.setLogin("Login");
         user.setName("Name");
-        user.setBirthday(LocalDate.of(2229, 2, 26));
+        user.setBirthday(LocalDate.of(1129, 2, 26));
         User newUser = userStorage.addUser(user);
         String userString = gson.toJson(newUser);
 
@@ -108,7 +108,7 @@ class UserControllerTest {
         user.setEmail("sexyshmeksi@jora.thx");
         user.setLogin("Login");
         user.setName("Name");
-        user.setBirthday(LocalDate.of(2222, 2, 26));
+        user.setBirthday(LocalDate.of(1222, 2, 26));
         User userInfoToUpdate = userStorage.addUser(user);
         String userRequestString = gson.toJson(userInfoToUpdate);
 

@@ -65,7 +65,7 @@ class FilmControllerTest {
     void postMappingRCodeWhenInvalidBody() throws Exception {
         Film film = new Film();
         FilmStorage filmStorage = new InMemoryFilmStorage();
-        film.setName("");
+        film.setName("й");
         film.setDescription("Description");
         film.setReleaseDate(LocalDate.of(2000, 6, 11));
         film.setDuration(Duration.ofSeconds(10));
@@ -107,7 +107,7 @@ class FilmControllerTest {
     void putMappingRCodeWhenInvalidBody() throws Exception {
         Film film = new Film();
         FilmStorage filmStorage = new InMemoryFilmStorage();
-        film.setName("");
+        film.setName("e");
         film.setDescription("Description");
         film.setReleaseDate(LocalDate.of(2000, 6, 11));
         film.setDuration(Duration.ofSeconds(10));
