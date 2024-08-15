@@ -6,7 +6,6 @@ package ru.yandex.practicum.filmorate.model;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
 //import org.hibernate.validator.constraints.time.DurationMin;
 //import ru.yandex.practicum.filmorate.validator.NotBeforeDate;
 
@@ -15,7 +14,6 @@ import java.time.LocalDate;
 
 
 @Data
-@Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Film {
 
@@ -29,7 +27,7 @@ public class Film {
 //  @NotNull
 //  @DurationMin
     Duration duration;
-    Integer likes;
+    Integer likes = 0;
 
 
     public long getDuration() {
