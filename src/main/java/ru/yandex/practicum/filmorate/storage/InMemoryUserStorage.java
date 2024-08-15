@@ -3,8 +3,10 @@ package ru.yandex.practicum.filmorate.storage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
+import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -25,6 +27,8 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User addUser(User user) {
+
+        validateDataOfUser(user);
         if (user.getName() == null || user.getName().isBlank()) {
             log.trace("Имя пользователя было выдано на основании логина");
             user.setName(user.getLogin());
@@ -130,5 +134,28 @@ public class InMemoryUserStorage implements UserStorage {
                 .orElse(0);
         log.debug("Присвоен новый Id:", (currentMaxId + 1));
         return ++currentMaxId;
+    }
+
+    private void validateDataOfUser(User user) {
+        if (user.getEmail() == null || user.getEmail().isBlank()) {
+            log.warn("Пустое значение Email недопустимо");
+            throw new ValidationException("Имейл должен быть указан");
+        }
+        if (!user.getEmail().contains("@")) {
+            log.warn("Email не содержит @");
+            throw new ValidationException("Некорректный имейл");
+        }
+        if (user.getLogin() == null || user.getLogin().isBlank()) {
+            log.warn("Пустое значение Login недопустимо");
+            throw new ValidationException("Логин должен быть указан");
+        }
+        if (user.getLogin().contains(" ")) {
+            log.warn("Использование проблелов в поле Login недопустимо");
+            throw new ValidationException("В логине присутсвуют неразрешенные символы (пробелы)");
+        }
+        if (user.getBirthday() != null && user.getBirthday().isAfter(LocalDate.now())) {
+            log.warn("Поле Birthday не может быть больше текущей даты");
+            throw new ValidationException("Некорректная дата рождения");
+        }
     }
 }
