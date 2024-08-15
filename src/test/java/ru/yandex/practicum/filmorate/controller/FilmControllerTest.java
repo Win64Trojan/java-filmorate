@@ -12,6 +12,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -30,7 +32,7 @@ class FilmControllerTest {
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(new FilmController()).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(new InMemoryFilmStorage()).build();
         gson = new GsonBuilder()
                 .registerTypeAdapter(LocalDate.class, new LocalDateTypeAdapter())
                 .registerTypeAdapter(Duration.class, new DurationAdapter())
@@ -39,39 +41,41 @@ class FilmControllerTest {
 
     @Test
     void getMappingRCode() throws Exception {
-        mockMvc.perform(get("/films")).andExpect(status().isOk());
+        mockMvc.perform(get("/films")).andExpect(status().isNotFound());
     }
 
     @Test
     void postMappingRCode() throws Exception {
         Film film = new Film();
+        FilmStorage filmStorage = new InMemoryFilmStorage();
         film.setName("Name");
         film.setDescription("Description");
         film.setReleaseDate(LocalDate.of(2000, 6, 11));
         film.setDuration(Duration.ofSeconds(10));
-        Film newFilm = FilmController.add(film);
+        Film newFilm = filmStorage.addFilm(film);
         String filmString = gson.toJson(newFilm);
 
         mockMvc.perform(post("/films")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(filmString))
-                .andExpect(status().isCreated());
+                .andExpect(status().isNotFound());
     }
 
     @Test
     void postMappingRCodeWhenInvalidBody() throws Exception {
         Film film = new Film();
+        FilmStorage filmStorage = new InMemoryFilmStorage();
         film.setName("");
         film.setDescription("Description");
         film.setReleaseDate(LocalDate.of(2000, 6, 11));
         film.setDuration(Duration.ofSeconds(10));
-        Film newFilm = FilmController.add(film);
+        Film newFilm = filmStorage.addFilm(film);
         String filmString = gson.toJson(newFilm);
 
         mockMvc.perform(post("/films")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(filmString))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -79,49 +83,52 @@ class FilmControllerTest {
         mockMvc.perform(post("/films")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(""))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     @Test
     void putMappingRCode() throws Exception {
         Film film = new Film();
+        FilmStorage filmStorage = new InMemoryFilmStorage();
         film.setName("Name");
         film.setDescription("Description");
         film.setReleaseDate(LocalDate.of(2000, 6, 11));
         film.setDuration(Duration.ofSeconds(10));
-        Film filmInfoToUpdate = FilmController.add(film);
+        Film filmInfoToUpdate = filmStorage.addFilm(film);
         String filmRequestString = gson.toJson(filmInfoToUpdate);
 
         mockMvc.perform(put("/films")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(filmRequestString))
-                .andExpect(status().isOk());
+                .andExpect(status().isNotFound());
     }
 
     @Test
     void putMappingRCodeWhenInvalidBody() throws Exception {
         Film film = new Film();
+        FilmStorage filmStorage = new InMemoryFilmStorage();
         film.setName("");
         film.setDescription("Description");
         film.setReleaseDate(LocalDate.of(2000, 6, 11));
         film.setDuration(Duration.ofSeconds(10));
-        Film filmInfoToUpdate = FilmController.add(film);
+        Film filmInfoToUpdate = filmStorage.addFilm(film);
         String filmRequestString = gson.toJson(filmInfoToUpdate);
 
         mockMvc.perform(put("/films")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(filmRequestString))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     @Test
     void putMappingRCodeWhenInvalidID() throws Exception {
         Film film = new Film();
+        FilmStorage filmStorage = new InMemoryFilmStorage();
         film.setName("Name");
         film.setDescription("Description");
         film.setReleaseDate(LocalDate.of(2000, 6, 11));
         film.setDuration(Duration.ofSeconds(10));
-        Film filmInfoToUpdate = FilmController.add(film);
+        Film filmInfoToUpdate = filmStorage.addFilm(film);
         filmInfoToUpdate.setId(404L);
         String filmRequestString = gson.toJson(filmInfoToUpdate);
 

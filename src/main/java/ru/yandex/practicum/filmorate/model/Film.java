@@ -29,6 +29,8 @@ public class Film {
     @NotNull
     @DurationMin
     Duration duration;
+    Integer likes;
+
 
     public long getDuration() {
         return duration.toSeconds();
