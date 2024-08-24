@@ -3,7 +3,8 @@ package ru.yandex.practicum.filmorate.model;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.filmorate.controller.UserController;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.time.LocalDate;
 
@@ -11,7 +12,7 @@ class UserTest {
 
     @BeforeEach
     void setUp() {
-        UserController.users.clear();
+        InMemoryUserStorage.users.clear();
     }
 
     @Test
@@ -19,14 +20,15 @@ class UserTest {
         int creatingTimes = 13;
         for (int i = 0; i < creatingTimes; i++) {
             User user = new User();
+            UserStorage userStorage = new InMemoryUserStorage();
             user.setEmail("sexyshmeksi@jora.thx");
             user.setLogin("Login");
             user.setName("Name");
             user.setBirthday(LocalDate.of(2000, 6, 11));
-            UserController.add(user);
+            userStorage.addUser(user);
         }
 
-        Assertions.assertEquals(creatingTimes, UserController.getUsers().size());
+        Assertions.assertEquals(creatingTimes, InMemoryUserStorage.users.size());
     }
 
     @Test
@@ -35,11 +37,12 @@ class UserTest {
         User lastAddedUser = null;
         for (int i = 0; i < creatingTimes; i++) {
             User user = new User();
+            UserStorage userStorage = new InMemoryUserStorage();
             user.setEmail("sexyshmeksi@jora.thx");
             user.setLogin("Login");
             user.setName("Name");
             user.setBirthday(LocalDate.of(2000, 6, 11));
-            lastAddedUser = UserController.add(user);
+            lastAddedUser = userStorage.addUser(user);
         }
 
         Assertions.assertEquals(creatingTimes, lastAddedUser.getId());

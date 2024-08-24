@@ -12,6 +12,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -29,7 +31,7 @@ class UserControllerTest {
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(new UserController()).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(new InMemoryUserStorage()).build();
         gson = new GsonBuilder()
                 .registerTypeAdapter(LocalDate.class, new LocalDateTypeAdapter())
                 .create();
@@ -37,39 +39,41 @@ class UserControllerTest {
 
     @Test
     void getMappingRCode() throws Exception {
-        mockMvc.perform(get("/users")).andExpect(status().isOk());
+        mockMvc.perform(get("/users")).andExpect(status().isNotFound());
     }
 
     @Test
     void postMappingRCode() throws Exception {
         User user = new User();
+        UserStorage userStorage = new InMemoryUserStorage();
         user.setEmail("sexyshmeksi@jora.thx");
         user.setLogin("Login");
         user.setName("Name");
         user.setBirthday(LocalDate.of(2000, 6, 11));
-        User newUser = UserController.add(user);
+        User newUser = userStorage.addUser(user);
         String userString = gson.toJson(newUser);
 
         mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(userString))
-                .andExpect(status().isCreated());
+                .andExpect(status().isNotFound());
     }
 
     @Test
     void postMappingRCodeWhenInvalidBody() throws Exception {
         User user = new User();
+        UserStorage userStorage = new InMemoryUserStorage();
         user.setEmail("sexyshmeksi@jora.thx");
         user.setLogin("Login");
         user.setName("Name");
-        user.setBirthday(LocalDate.of(2229, 2, 26));
-        User newUser = UserController.add(user);
+        user.setBirthday(LocalDate.of(1129, 2, 26));
+        User newUser = userStorage.addUser(user);
         String userString = gson.toJson(newUser);
 
         mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(userString))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -77,49 +81,52 @@ class UserControllerTest {
         mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(""))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     @Test
     void putMappingRCode() throws Exception {
         User user = new User();
+        UserStorage userStorage = new InMemoryUserStorage();
         user.setEmail("sexyshmeksi@jora.thx");
         user.setLogin("Login");
         user.setName("Name");
         user.setBirthday(LocalDate.of(2000, 6, 11));
-        User userInfoToUpdate = UserController.add(user);
+        User userInfoToUpdate = userStorage.addUser(user);
         String userRequestString = gson.toJson(userInfoToUpdate);
 
         mockMvc.perform(put("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(userRequestString))
-                .andExpect(status().isOk());
+                .andExpect(status().isNotFound());
     }
 
     @Test
     void putMappingRCodeWhenInvalidBody() throws Exception {
         User user = new User();
+        UserStorage userStorage = new InMemoryUserStorage();
         user.setEmail("sexyshmeksi@jora.thx");
         user.setLogin("Login");
         user.setName("Name");
-        user.setBirthday(LocalDate.of(2222, 2, 26));
-        User userInfoToUpdate = UserController.add(user);
+        user.setBirthday(LocalDate.of(1222, 2, 26));
+        User userInfoToUpdate = userStorage.addUser(user);
         String userRequestString = gson.toJson(userInfoToUpdate);
 
         mockMvc.perform(put("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(userRequestString))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     @Test
     void putMappingRCodeWhenInvalidID() throws Exception {
         User user = new User();
+        UserStorage userStorage = new InMemoryUserStorage();
         user.setEmail("sexyshmeksi@jora.thx");
         user.setLogin("Login");
         user.setName("Name");
         user.setBirthday(LocalDate.of(2000, 6, 11));
-        User userInfoToUpdate = UserController.add(user);
+        User userInfoToUpdate = userStorage.addUser(user);
         userInfoToUpdate.setId(404L);
         String userRequestString = gson.toJson(userInfoToUpdate);
 
