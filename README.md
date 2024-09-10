@@ -10,9 +10,9 @@
 *Таблица состоит из полей:*
 
 *Первичный ключ* `user_id` — *идентификатор пользователя;*
-* `name` — *имя пользователя;*
-* `login` — *login пользователя [уникальное не нулевое поле];*
+* `user_name` — *имя пользователя;*
 * `email` — *email пользователя [уникальное не нулевое поле];*
+* `login` — *login пользователя [уникальное не нулевое поле];*
 * `birthday` — *дата рождения;*
   
 ---
@@ -21,7 +21,7 @@
 
 *Таблица состоит из полей:*
 
-* `initiator_id` — *пользователь, который отправил запрос на добавление в друзья;*
+* `user_id` — *пользователь, который отправил запрос на добавление в друзья;*
 * `friend_id` — *пользователь которому отправлен запрос в друзья;*
 * `status` — *статус запроса, например* (`PENDING`, `APPROVED`)
   *В этой таблице составной первичный ключ по полям* `initiator_id` *и* `friend_id`
@@ -38,27 +38,27 @@
 
 ---
 
-#### `film` - *Содержит информацию о фильмах.*
+#### `films` - *Содержит информацию о фильмах.*
 *Таблица состоит из полей:*
 *первичный ключ `film_id` — идентификатор фильма;*
-* `title` — *название фильма;*
+* `film_name` — *название фильма;*
+* `rating_id` — *идентификатор рейтинга из rating;*
 * `description` — *описание фильма;*
 * `release_date` — *дата выхода;*
 * `duration` — *продолжительность фильма в минутах;*
-* `mpa_rating` — *идентификатор рейтинга из mpa;*
 
 ---
 
-#### `mpa` - *Содержит информацию о рейтингах Motion Picture Association.*
+#### `rating` - *Содержит информацию о рейтингах Motion Picture Association.*
 
 *Таблица состоит из полей:*
 
-* `id` — *первичный ключ идентификатор рейтинга;*
-* `name` — *название рейтинга;*
+* `rating_id` — *первичный ключ идентификатор рейтинга;*
+* `rating_name` — *название рейтинга;*
 
 ---
 
-#### `film_genre` - *Содержит информацию о жанрах фильмов из таблицы* `film`.
+#### `film_genres` - *Содержит информацию о жанрах фильмов из таблицы* `film`.
 
 *Таблица состоит из полей:*
 
@@ -68,12 +68,12 @@
 
 ---
 
-#### `genre` - *Содержит информацию о жанрах фильмов.*
+#### `genres` - *Содержит информацию о жанрах фильмов.*
 
 *Таблица состоит из полей:*
 
 *Первичный ключ `genre_id` — идентификатор жанра;*
-* `name` — *название жанра;*
+* `genre_name` — *название жанра;*
 
 
 ## Примеры запросов к базе данных
@@ -85,9 +85,9 @@
 SELECT u.user_id,
        u.name,
        u.email
-FROM film AS f
+FROM films AS f
 LEFT JOIN likes  AS l on f.film_id = l.film_id
-LEFT JOIN "user" AS u on u.user_id = l.user_id
+LEFT JOIN "users" AS u on u.user_id = l.user_id
 WHERE f.film_id = 1;
 ```
 
@@ -99,15 +99,15 @@ SELECT u.user_id,
        u.login,
        u.email
        
-FROM (SELECT initiator_id AS user_id
+FROM (SELECT user_id AS user_id
       FROM friends
-      WHERE initiator_id = 1 OR friend_id = 1 AND status = 'APPROVED'
+      WHERE user_id = 1 OR friend_id = 1 AND status = 'APPROVED'
 
       UNION
 
       SELECT friend_id AS user_id
       FROM friends
-      WHERE initiator_id = 1 OR friend_id = 1 AND status = 'APPROVED') AS users_list
+      WHERE user_id = 1 OR friend_id = 1 AND status = 'APPROVED') AS users_list
 LEFT JOIN "user" AS u ON u.user_id = users_list.user_id
 WHERE users_list.user_id != 1;
 ```

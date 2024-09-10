@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.repository.UserRepository;
 
 import java.util.Collection;
 import java.util.List;
@@ -12,26 +12,28 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class BaseUserService implements UserService {
-    private final UserStorage userStorage;
+    private final UserRepository userRepository;
 
     @Override
     public Collection<User> getUsersList() {
-        return userStorage.getUsersList();
+        return userRepository.getUsersList();
     }
 
     @Override
-    public User addUser(User user) {
-        return userStorage.addUser(user);
+    public User addUser(User newUser) {
+        return userRepository.addUser(newUser);
     }
 
     @Override
     public User updateUser(User newUser) {
-        return userStorage.updateUser(newUser);
+        final User user = userRepository.findById(newUser.getId())
+                .orElseThrow(() -> new NotFoundException("Пользователь с " + newUser.getId() + "не найден"));
+        return userRepository.updateUser(newUser);
     }
 
     @Override
     public User getUserById(long id) {
-        final User user = userStorage.getUserById(id)
+        final User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Пользователь с " + id + "не найден"));
         return user;
     }
@@ -39,21 +41,25 @@ public class BaseUserService implements UserService {
     @Override
     public List<User> getFriends(long id) {
 
-        return userStorage.getFriends(getUserById(id));
+        return userRepository.getFriends(getUserById(id));
     }
 
     @Override
     public void addFriend(long id, long friendId) {
-        userStorage.addFriend(getUserById(id), getUserById(friendId));
+        userRepository.addFriend(getUserById(id), getUserById(friendId));
     }
 
     @Override
     public void deleteFriend(long id, long friendId) {
-        userStorage.deleteFriend(getUserById(id), getUserById(friendId));
+        userRepository.deleteFriend(getUserById(id), getUserById(friendId));
     }
 
     @Override
     public List<User> getMutualFriends(long id, long otherId) {
-        return userStorage.getMutualFriends(getUserById(id), getUserById(otherId));
+        final User user = userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Пользователь с " + id + "не найден"));
+        final User userOther = userRepository.findById(otherId)
+                .orElseThrow(() -> new NotFoundException("Пользователь с " + otherId + "не найден"));
+        return userRepository.getMutualFriends(user, userOther);
     }
 }
