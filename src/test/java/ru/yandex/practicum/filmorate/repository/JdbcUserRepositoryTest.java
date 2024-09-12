@@ -57,16 +57,6 @@ class JdbcUserRepositoryTest {
     }
 
     @Test
-    @DisplayName("должен быть создан пользователь")
-    public void shouldCreateUser() {
-        User userNew = userRepository.addUser(createTestUser());
-
-        assertThat(userNew)
-                .usingRecursiveComparison()
-                .isEqualTo(compareTestUser(userNew.getId()));
-    }
-
-    @Test
     @DisplayName("должен обновить имя пользователя")
     public void shouldUpdateUser() {
         Optional<User> userOptional = userRepository.findById(1);

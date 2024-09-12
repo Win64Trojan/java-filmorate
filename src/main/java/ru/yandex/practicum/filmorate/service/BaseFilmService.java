@@ -26,8 +26,6 @@ public class BaseFilmService implements FilmService {
     @Override
     public Film addFilm(Film filmNew) {
 
-        ratingRepository.findById(filmNew.getMpa().getId())
-                .orElseThrow(() -> new ValidationException("MPA с " + filmNew.getMpa().getId() + "не найден"));
         if (filmNew.getGenres() != null) {
             final List<Long> genreIds = filmNew.getGenres().stream().map(Genre::getId).toList();
             final Collection<Genre> genres = genreRepository.findByIds(genreIds);
@@ -35,6 +33,8 @@ public class BaseFilmService implements FilmService {
                 throw new ValidationException("Жанры не найдены");
             }
         }
+        ratingRepository.findById(filmNew.getMpa().getId())
+                .orElseThrow(() -> new ValidationException("MPA с " + filmNew.getMpa().getId() + "не найден"));
         return filmRepository.addFilm(filmNew);
     }
 
