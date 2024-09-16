@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.service.ValidateService;
 
 import java.util.Collection;
 
@@ -26,11 +27,13 @@ import java.util.Collection;
 public class FilmController {
 
     private final FilmService filmService;
+    private final ValidateService validateService;
 
 
     @PostMapping
     public ResponseEntity<Film> addFilm(@Valid @RequestBody Film film) {
         log.debug("Запрос на создание фильма");
+        validateService.validateFilm(film);
         return new ResponseEntity<>(filmService.addFilm(film), HttpStatus.CREATED);
     }
 
@@ -38,6 +41,7 @@ public class FilmController {
     @PutMapping
     public ResponseEntity<Film> updateFilm(@Valid @RequestBody Film filmNewInfo) {
         log.debug("Запрос на обновление данных о фильме");
+        validateService.validateFilm(filmNewInfo);
         return new ResponseEntity<>(filmService.updateFilm(filmNewInfo), HttpStatus.OK);
     }
 
@@ -53,11 +57,13 @@ public class FilmController {
 
     @GetMapping("{id}")
     public Film getFilmById(@PathVariable long id) {
+        log.debug("Запрос на получения фильма по айди");
         return filmService.getFilmById(id);
     }
 
     @PutMapping("{id}/like/{user-id}")
     public void setLike(@PathVariable long id, @PathVariable("user-id") long userId) {
+        log.debug("Запрос на получение  данных о лайках");
         filmService.setLike(id, userId);
     }
 

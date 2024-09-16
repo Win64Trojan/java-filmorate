@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.service.ValidateService;
 
 import java.util.Collection;
 import java.util.List;
@@ -25,17 +26,20 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+    private final ValidateService validateService;
 
 
     @PostMapping
     public ResponseEntity<User> addUser(@Valid @RequestBody User user) {
         log.debug("Запрос на создание пользователя");
+        validateService.validateUser(user);
         return new ResponseEntity<>(userService.addUser(user), HttpStatus.CREATED);
     }
 
     @PutMapping
     public ResponseEntity<User> updateUser(@Valid @RequestBody User userNewInfo) {
         log.debug("Запрос на обновление существующего в базе пользователя");
+        validateService.validateUser(userNewInfo);
         return new ResponseEntity<>(userService.updateUser(userNewInfo), HttpStatus.OK);
     }
 
@@ -61,6 +65,7 @@ public class UserController {
 
     @GetMapping("{id}/friends")
     public List<User> getFriends(@PathVariable long id) {
+        log.debug("Запрос на получение списка друзей");
         return userService.getFriends(id);
     }
 
